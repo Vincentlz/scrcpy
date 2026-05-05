@@ -38,6 +38,12 @@ struct sc_screen {
     bool camera;
     bool window_aspect_ratio_lock;
 
+    struct sc_screen_bg_color {
+        uint8_t r;
+        uint8_t g;
+        uint8_t b;
+    } bg;
+
     struct sc_texture tex;
     struct sc_input_manager im;
     struct sc_mouse_capture mc; // only used in mouse relative mode
@@ -106,6 +112,8 @@ struct sc_screen_params {
     int16_t window_y; // accepts SC_WINDOW_POSITION_UNDEFINED
     uint16_t window_width;
     uint16_t window_height;
+
+    uint32_t background_color;
 
     bool window_aspect_ratio_lock;
     bool window_borderless;

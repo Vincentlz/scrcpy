@@ -32,6 +32,28 @@ behavior:
 scrcpy --no-window-aspect-ratio-lock
 ```
 
+## Background color
+
+To maintain the device aspect ratio (when using `--no-window-aspect-ratio-lock`
+or in fullscreen mode), padding is added around the device. By default, it is
+black.
+
+This can be changed:
+
+```bash
+# Use the hexadecimal color code #234567
+# (r, g, b) = (0x23, 0x45, 0x67) = (35, 69, 103)
+scrcpy --fullscreen --background-color=#234567
+
+# The leading '#' is optional
+scrcpy --fullscreen --background-color=234567
+
+# Hexadecimal color shorthand (3-digit form) is supported
+scrcpy --fullscreen --background-color=#567
+# is equivalent to:
+scrcpy --fullscreen --background-color=#556677
+```
+
 ## Borderless
 
 To disable window decorations:

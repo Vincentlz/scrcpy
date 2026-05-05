@@ -106,6 +106,7 @@ enum {
     OPT_MIN_SIZE_ALIGNMENT,
     OPT_NO_WINDOW_ASPECT_RATIO_LOCK,
     OPT_KEEP_ACTIVE,
+    OPT_BACKGROUND_COLOR,
 };
 
 struct sc_option {
@@ -252,6 +253,14 @@ static const struct sc_option options[] = {
         .text = "Encode the video at the given bit rate, expressed in bits/s. "
                 "Unit suffixes are supported: 'K' (x1000) and 'M' (x1000000).\n"
                 "Default is 8M (8000000).",
+    },
+    {
+        .longopt_id = OPT_BACKGROUND_COLOR,
+        .longopt = "background-color",
+        .argdesc = "hexcolor",
+        .text = "Set the background color, encoded as hexadecimal color code "
+                "(#RGB or #RRGGBB).\n"
+                "Default is #000 (black).",
     },
     {
         .longopt_id = OPT_CAMERA_AR,
@@ -2333,6 +2342,74 @@ parse_mouse_bindings(const char *s, struct sc_mouse_bindings *mb) {
 }
 
 static bool
+parse_hex_char(char c, uint8_t *value) {
+    if (c >= '0' && c <= '9') {
+        *value = c - '0';
+        return true;
+    }
+    if (c >= 'a' && c <= 'f') {
+        *value = c - 'a' + 10;
+        return true;
+    }
+    if (c >= 'A' && c <= 'F') {
+        *value = c - 'A' + 10;
+        return true;
+    }
+    return false;
+}
+
+static bool
+parse_hex_byte(const char *s, uint8_t *value) {
+    uint8_t left, right;
+    bool ok = parse_hex_char(s[0], &left)
+           && parse_hex_char(s[1], &right);
+    if (!ok) {
+        return false;
+    }
+    *value = left << 4 | right;
+    return true;
+}
+
+static bool
+parse_hex_color(const char *s, uint32_t *color) {
+    if (s[0] == '#') {
+        // Accept with and without a leading '#'
+        ++s;
+    }
+
+    size_t len = strlen(s);
+    if (len != 3 && len != 6) {
+        LOGE("Invalid hexadecimal color code (expected #RGB or #RRGGBB): "
+             "%s", s);
+        return false;
+    }
+
+    uint8_t rgb[3];
+    if (len == 3) {
+        for (size_t i = 0; i < 3; ++i) {
+            bool ok = parse_hex_char(s[i], &rgb[i]);
+            if (!ok) {
+                LOGE("Invalid hexadecimal color code: %s", s);
+                return false;
+            }
+            rgb[i] *= 0x11;
+        }
+    } else {
+        assert(len == 6);
+        for (size_t i = 0; i < 3; ++i) {
+            bool ok = parse_hex_byte(&s[2*i], &rgb[i]);
+            if (!ok) {
+                LOGE("Invalid hexadecimal color code: %s", s);
+                return false;
+            }
+        }
+    }
+
+    *color = rgb[0] << 16 | rgb[1] << 8 | rgb[2];
+    return true;
+}
+
+static bool
 parse_args_with_getopt(struct scrcpy_cli_args *args, int argc, char *argv[],
                        const char *optstring, const struct option *longopts) {
     struct scrcpy_options *opts = &args->opts;
@@ -2767,6 +2844,11 @@ parse_args_with_getopt(struct scrcpy_cli_args *args, int argc, char *argv[],
                 break;
             case OPT_KEEP_ACTIVE:
                 opts->keep_active = true;
+                break;
+            case OPT_BACKGROUND_COLOR:
+                if (!parse_hex_color(optarg, &opts->background_color)) {
+                    return false;
+                }
                 break;
             default:
                 // getopt prints the error message on stderr

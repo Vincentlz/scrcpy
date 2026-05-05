@@ -218,7 +218,8 @@ sc_screen_render(struct sc_screen *screen, bool update_content_rect) {
     }
 
     SDL_Renderer *renderer = screen->renderer;
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+    struct sc_screen_bg_color bg = screen->bg;
+    SDL_SetRenderDrawColor(renderer, bg.r, bg.g, bg.b, 0);
     sc_sdl_render_clear(renderer);
 
     bool ok = false;
@@ -393,6 +394,10 @@ sc_screen_init(struct sc_screen *screen,
     screen->video = params->video;
     screen->camera = params->camera;
     screen->window_aspect_ratio_lock = params->window_aspect_ratio_lock;
+
+    screen->bg.r = (params->background_color >> 16) & 0xFF;
+    screen->bg.g = (params->background_color >> 8) & 0xFF;
+    screen->bg.b = params->background_color & 0xFF;
 
     screen->req.x = params->window_x;
     screen->req.y = params->window_y;
