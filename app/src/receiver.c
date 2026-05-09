@@ -85,7 +85,7 @@ process_msg(struct sc_receiver *receiver, struct sc_device_msg *msg) {
             // Take ownership of the text (do not destroy the msg)
             char *text = msg->clipboard.text;
 
-            bool ok = sc_post_to_main_thread(task_set_clipboard, text);
+            bool ok = sc_run_on_main_thread(task_set_clipboard, text, false);
             if (!ok) {
                 LOGW("Could not post clipboard to main thread");
                 free(text);
@@ -139,14 +139,13 @@ process_msg(struct sc_receiver *receiver, struct sc_device_msg *msg) {
 
             // It is guaranteed that these pointers will still be valid when
             // the main thread will process them (the main thread will stop
-            // processing SC_EVENT_RUN_ON_MAIN_THREAD on exit, when everything
-            // gets deinitialized)
+            // processing on exit, when everything gets deinitialized)
             data->uhid_devices = receiver->uhid_devices;
             data->id = msg->uhid_output.id;
             data->data = msg->uhid_output.data; // take ownership
             data->size = msg->uhid_output.size;
 
-            bool ok = sc_post_to_main_thread(task_uhid_output, data);
+            bool ok = sc_run_on_main_thread(task_uhid_output, data, false);
             if (!ok) {
                 LOGW("Could not post UHID output to main thread");
                 free(data->data);

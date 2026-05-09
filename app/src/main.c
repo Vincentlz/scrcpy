@@ -8,6 +8,7 @@
 #include <SDL3/SDL.h>
 
 #include "cli.h"
+#include "events.h"
 #include "options.h"
 #include "scrcpy.h"
 #ifdef HAVE_USB
@@ -83,12 +84,20 @@ main_scrcpy(int argc, char *argv[]) {
 
     sc_log_configure();
 
+    if (!sc_main_thread_init()) {
+        ret = SCRCPY_EXIT_FAILURE;
+        goto net_cleanup;
+    }
+
 #ifdef HAVE_USB
     ret = args.opts.otg ? scrcpy_otg(&args.opts) : scrcpy(&args.opts);
 #else
     ret = scrcpy(&args.opts);
 #endif
 
+    sc_main_thread_destroy();
+
+net_cleanup:
     net_cleanup();
 
 end:

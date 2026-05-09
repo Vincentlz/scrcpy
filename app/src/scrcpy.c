@@ -140,12 +140,6 @@ event_loop(struct scrcpy *s, bool has_screen) {
             case SDL_EVENT_QUIT:
                 LOGD("User requested to quit");
                 return SCRCPY_EXIT_SUCCESS;
-            case SC_EVENT_RUN_ON_MAIN_THREAD: {
-                sc_runnable_fn run = event.user.data1;
-                void *userdata = event.user.data2;
-                run(userdata);
-                break;
-            }
             default:
                 if (has_screen) {
                     sc_screen_handle_event(&s->screen, &event);
@@ -154,22 +148,6 @@ event_loop(struct scrcpy *s, bool has_screen) {
         }
     }
     return SCRCPY_EXIT_FAILURE;
-}
-
-static void
-terminate_runnables_on_event_loop(void) {
-    sc_reject_new_runnables();
-
-    SDL_Event event;
-    while (SDL_PeepEvents(&event, 1, SDL_GETEVENT,
-                          SC_EVENT_RUN_ON_MAIN_THREAD,
-                          SC_EVENT_RUN_ON_MAIN_THREAD) == 1) {
-        assert(event.type == SC_EVENT_RUN_ON_MAIN_THREAD);
-        // Make sure all posted runnables are run, to avoid memory leaks
-        sc_runnable_fn run = event.user.data1;
-        void *userdata = event.user.data2;
-        run(userdata);
-    }
 }
 
 // Return true on success, false on error
@@ -902,7 +880,11 @@ aoa_complete:
     }
 
     ret = event_loop(s, options->window);
-    terminate_runnables_on_event_loop();
+
+    // Reject all new runnables, and execute the pending ones now
+    // (they could access memory that will be cleaned up below)
+    sc_main_thread_stop();
+
     disconnected = ret == SCRCPY_EXIT_DISCONNECTED;
 
 end:
