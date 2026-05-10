@@ -275,8 +275,14 @@ This installs several files:
  - `/usr/local/share/scrcpy/scrcpy-server` (server to push to the device)
  - `/usr/local/share/man/man1/scrcpy.1` (manpage)
  - `/usr/local/share/icons/hicolor/256x256/apps/scrcpy.png` (app icon)
+ - `/usr/local/share/icons/hicolor/256x256/apps/disconnected.png` (device
+   disconnected icon)
  - `/usr/local/share/zsh/site-functions/_scrcpy` (zsh completion)
  - `/usr/local/share/bash-completion/completions/scrcpy` (bash completion)
+ - `/usr/local/share/applications/scrcpy.desktop` (app-without-console desktop
+   entry file)
+ - `/usr/local/share/applications/scrcpy-console.desktop` (app-with-console
+   desktop entry file)
 
 You can then run `scrcpy`.
 

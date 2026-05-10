@@ -141,7 +141,7 @@ This mode is restricted to specific resolutions and frame rates, listed by
 `--list-camera-sizes`.
 
 ```bash
-scrcpy --video-source=camera --camera-size=1920x1080 --camera-fps=240
+scrcpy --video-source=camera --camera-size=1920x1080 --camera-high-speed --camera-fps=240
 ```
 
 [high speed]: https://developer.android.com/reference/android/hardware/camera2/CameraConstrainedHighSpeedCaptureSession
@@ -150,7 +150,8 @@ scrcpy --video-source=camera --camera-size=1920x1080 --camera-fps=240
 ## Brace expansion tip
 
 All camera options start with `--camera-`, so if your shell supports it, you can
-benefit from [brace expansion] (for example, it is supported _bash_ and _zsh_):
+benefit from [brace expansion] (for example, it is supported by _bash_ and
+_zsh_):
 
 ```bash
 scrcpy --video-source=camera --camera-{facing=back,ar=16:9,high-speed,fps=120}
@@ -179,7 +180,7 @@ and <kbd>MOD</kbd>+<kbd>Shift</kbd>+<kbd>t</kbd>, respectively.
 
 ## Zoom
 
-The camera zoom can be set with `--camera-zoom=`:
+The camera zoom can be set with `--camera-zoom`:
 
 ```bash
 scrcpy --video-source=camera --camera-zoom=1.5
