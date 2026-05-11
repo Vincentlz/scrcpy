@@ -154,7 +154,11 @@ install it manually and make it available from the `PATH`:
 export PATH="$JAVA_HOME/bin:$PATH"
 ```
 
-### Mac OS
+When following the rest of the build instructions below, make sure you use the
+MinGW terminal within MSYS2.
+
+
+### macOS
 
 Install the packages with [Homebrew]:
 
@@ -172,8 +176,7 @@ Additionally, if you want to build the server, install Java 17 from Caskroom, an
 make it available from the `PATH`:
 
 ```bash
-brew tap homebrew/cask-versions
-brew install adoptopenjdk/openjdk/adoptopenjdk17
+brew install openjdk@17
 export JAVA_HOME="$(/usr/libexec/java_home --version 1.17)"
 export PATH="$JAVA_HOME/bin:$PATH"
 ```

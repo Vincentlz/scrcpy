@@ -111,4 +111,4 @@ scrcpy --render-fit=stretched
 ```
 
 [letterbox]: https://en.wikipedia.org/wiki/Letterboxing_(filming)
-[flex displays]: virtual_display.md#flex-display
+[flex displays]: virtual-display.md#flex-display

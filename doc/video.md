@@ -64,7 +64,7 @@ scrcpy --max-fps=15
 
 The actual capture frame rate may be printed to the console:
 
-```
+```bash
 scrcpy --print-fps
 ```
 
@@ -181,7 +181,7 @@ values are allowed when recording.
 
 To rotate the video content by a custom angle (in degrees, clockwise):
 
-```
+```bash
 scrcpy --angle=23
 ```
 
@@ -228,7 +228,7 @@ scrcpy --list-displays
 A secondary display may only be controlled if the device runs at least Android
 10 (otherwise it is mirrored as read-only).
 
-It is also possible to create a [virtual display](virtual_display.md).
+It is also possible to create a [virtual display](virtual-display.md).
 
 
 ## Buffering
@@ -283,7 +283,7 @@ scrcpy --record=file.mkv --no-audio-playback
 
 To disable video forwarding completely, so that only audio is forwarded:
 
-```
+```bash
 scrcpy --no-video
 ```
 
