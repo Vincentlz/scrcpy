@@ -14,8 +14,6 @@ Download a static build of the [latest release]:
 
 and extract it.
 
-_Static builds of scrcpy for Linux are still experimental._
-
 
 ### From your package manager
 
